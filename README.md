@@ -28,8 +28,6 @@ python manage.py seed_data
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/.
-
 Demo accounts created by `seed_data` (also 10 books):
 
 | Role   | Username                | Password      |
