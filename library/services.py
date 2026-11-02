@@ -43,7 +43,6 @@ class LibraryService:
     
 
     def borrow_book(self, member, book):
-        """Create a loan for ``member``. Returns the new BorrowRecord."""
         try:
             with transaction.atomic():
                 return self._borrow(member, book)
@@ -68,7 +67,6 @@ class LibraryService:
             return record
 
     def reserve_book(self, member, book):
-        """Add ``member`` to the waiting list of ``book``. Returns the Reservation."""
         try:
             with transaction.atomic():
                 book = self._lock_book(book)
@@ -114,11 +112,7 @@ class LibraryService:
         return None
 
     def calculate_overdue_days(self, borrow_record, now=None):
-        """Whole days past the due date (0 if on time).
 
-        Active loan   -> compared with ``now``.
-        Returned loan -> compared with the actual return date (late returns stay visible).
-        """
         end = borrow_record.return_date or now or timezone.now()
         return max(0, (end - borrow_record.due_date).days)
 
@@ -154,7 +148,7 @@ class LibraryService:
             book.delete()
 
     def count_active_loans(self, member):
-        """Number of books the member currently holds."""
+        
         return BorrowRecord.objects.filter(member=member, status=BorrowRecord.Status.BORROWED).count()
 
     def member_summary(self, member):
@@ -228,4 +222,3 @@ class LibraryService:
             head.status = Reservation.Status.READY
             head.save(update_fields=["status"])
         return head
-
