@@ -1,0 +1,52 @@
+{% extends "library/base.html" %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+<h1>{{ book.title }}</h1>
+<div class="card">
+  <p><strong>Author:</strong> {{ book.author }}</p>
+  <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+  <p><strong>Category:</strong> {{ book.category }}</p>
+  <p><strong>Published:</strong> {{ book.publication_year }}</p>
+  <p><strong>Availability:</strong>
+    {% if status.active_loan %}
+      <span class="badge badge-out">Borrowed</span> <span class="muted">(due {{ status.active_loan.due_date|date:"d M Y" }})</span>
+    {% elif status.queue %}
+      <span class="badge badge-held">Held for the next member in the waiting list</span>
+    {% else %}
+      <span class="badge badge-ok">Available</span>
+    {% endif %}
+  </p>
+  {% if status.queue %}<p class="muted">{{ status.queue|length }} member(s) in the waiting list.</p>{% endif %}
+
+  {% if user.is_authenticated %}
+    {% if status.my_reservation %}
+      <p>Your reservation: <strong>{{ status.my_reservation.get_status_display }}</strong> — queue position <strong>{{ status.my_position }}</strong>.
+      {% if status.my_reservation.status == "ready" %}<strong>It is your turn: you can borrow this book now.</strong>{% endif %}</p>
+    {% endif %}
+    <div class="actions">
+      {% if status.can_borrow %}
+        <form method="post" action="{% url 'borrow_book' book.pk %}">{% csrf_token %}<button>Borrow (14 days)</button></form>
+      {% endif %}
+      {% if status.can_reserve %}
+        <form method="post" action="{% url 'reserve_book' book.pk %}">{% csrf_token %}<button>Join waiting list</button></form>
+      {% endif %}
+      {% if status.my_reservation %}
+        <form method="post" action="{% url 'cancel_reservation' book.pk %}">{% csrf_token %}<button class="btn-secondary">Cancel reservation</button></form>
+      {% endif %}
+      {% if status.can_return %}
+        <form method="post" action="{% url 'return_book' book.pk %}">{% csrf_token %}<button>Return book</button></form>
+      {% endif %}
+    </div>
+  {% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to borrow or reserve this book.</p>
+  {% endif %}
+</div>
+
+{% if user.is_staff %}
+  <div class="actions">
+    <a class="btn btn-secondary" href="{% url 'book_edit' book.pk %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'book_delete' book.pk %}">Delete</a>
+  </div>
+{% endif %}
+<p><a href="{% url 'book_list' %}">← Back to catalog</a></p>
+{% endblock %}

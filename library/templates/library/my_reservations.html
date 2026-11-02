@@ -1,0 +1,27 @@
+{% extends "library/base.html" %}
+{% block title %}My reservations{% endblock %}
+{% block content %}
+<h1>My reservations</h1>
+<table>
+  <thead><tr><th>Book</th><th>Reserved on</th><th>Status</th><th>Queue position</th><th></th></tr></thead>
+  <tbody>
+  {% for r in reservations %}
+    <tr>
+      <td><a href="{% url 'book_detail' r.book.pk %}">{{ r.book.title }}</a></td>
+      <td>{{ r.reservation_date|date:"d M Y H:i" }}</td>
+      <td>{{ r.get_status_display }}{% if r.status == "ready" %} — <a href="{% url 'book_detail' r.book.pk %}">borrow it now</a>{% endif %}</td>
+      <td>{% if r.position %}{{ r.position }}{% else %}—{% endif %}</td>
+      <td>
+        {% if r.is_active %}
+        <form method="post" action="{% url 'cancel_reservation' r.book.pk %}" class="inline">
+          {% csrf_token %}<input type="hidden" name="next" value="{% url 'my_reservations' %}"><button class="btn-secondary">Cancel</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" class="muted">You have no reservations.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

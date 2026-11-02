@@ -1,0 +1,17 @@
+{% extends "library/base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1>My profile</h1>
+<div class="card">
+  <p><strong>Username:</strong> {{ user.username }}</p>
+  <p><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+  <p><strong>Role:</strong> {% if user.is_staff %}Staff{% else %}Member{% endif %}</p>
+  <p><strong>Member since:</strong> {{ user.date_joined|date:"d M Y" }}</p>
+</div>
+<div class="card">
+  <p>Active loans: <strong>{{ summary.active_loans }}</strong> / 3</p>
+  <p>Total loans ever: <strong>{{ summary.total_loans }}</strong></p>
+  <p>Overdue now: <strong class="{% if overdue_count %}overdue{% endif %}">{{ overdue_count }}</strong></p>
+  <p>Active reservations: <strong>{{ active_reservations }}</strong></p>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "library/base.html" %}
+{% block title %}Not allowed{% endblock %}
+{% block content %}
+<h1>403 — Not allowed</h1>
+<p>You do not have permission to view this page.</p>
+<p><a href="{% url 'book_list' %}">Back to the catalog</a></p>
+{% endblock %}
