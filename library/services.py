@@ -1,19 +1,4 @@
-"""Business logic of the library.
 
-Views never apply rules themselves: they call ``LibraryService`` and translate the result (or a
-``LibraryError``) into a page / flash message.
-
-FIFO reservation queue
-----------------------
-The queue of a book is the set of its *active* reservations (``pending`` or ``ready``).
-Priority = (reservation_date, id): earliest time first, lowest id when times are identical.
-The ordering is done explicitly in ``_ordered_queue`` (no external queue library); the head of
-the queue is the only member allowed to borrow the book.
-
-* On return          -> head of the queue becomes ``ready``.
-* Head borrows       -> his reservation becomes ``fulfilled``.
-* Ready one cancels  -> the next member becomes ``ready`` immediately.
-"""
 from dataclasses import dataclass, field
 from datetime import timedelta
 
