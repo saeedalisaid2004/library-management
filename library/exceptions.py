@@ -1,9 +1,3 @@
-"""Domain exceptions raised by LibraryService.
-
-Views catch LibraryError and show ``str(exc)`` to the user, so every message here is written
-to be user-friendly.
-"""
-
 
 class LibraryError(Exception):
     """Base class for every business-rule violation."""
