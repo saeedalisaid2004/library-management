@@ -4,6 +4,5 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("library.urls")),
-    # Built-in login / logout / password views (templates live in library/templates/registration/).
     path("accounts/", include("django.contrib.auth.urls")),
 ]
